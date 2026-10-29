@@ -55,6 +55,7 @@ ndk = { version = "0.9", features = ["api-level-26", "media"] }
 webpki-roots = { workspace = true }
 # ash for Vulkan AHardwareBuffer import (zero-copy)
 ash = { version = "0.38" }
+pollster = "0.4"
 # wgpu-hal with vulkan feature for direct HAL access (zero-copy texture import)
 # Version MUST match egui-wgpu's wgpu-hal version for type compatibility
 wgpu-hal = { version = "30", features = ["vulkan"] }
