@@ -24,3 +24,4 @@ app/src/main/jniLibs/**/*.so
 *.keystore
 *.jks
 signing.properties
+local.properties
