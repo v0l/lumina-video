@@ -53,8 +53,6 @@ pub mod linux_video;
 #[cfg(target_os = "linux")]
 pub mod linux_video_gst;
 
-pub mod frame_release;
-
 #[cfg(target_os = "android")]
 pub mod android_video;
 #[cfg(target_os = "android")]

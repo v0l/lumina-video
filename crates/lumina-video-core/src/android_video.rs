@@ -1222,27 +1222,7 @@ pub fn try_receive_hardware_buffer_for_player(player_id: u64) -> Option<AndroidV
     // Per-player mode: pop from this player's dedicated queue
     let queues = PLAYER_QUEUES.get()?;
     let mut queues_guard = queues.write();
-    let queue = &mut queues_guard.get_mut(&player_id)?.queue;
-    let now = monotonic_now_ns();
-    let mut due = None;
-    while let Some(front) = queue.front() {
-        if !crate::frame_release::frame_is_due(front.timestamp_ns, now) {
-            break;
-        }
-        due = queue.pop_front();
-    }
-    due
-}
-
-fn monotonic_now_ns() -> i64 {
-    let mut ts = libc::timespec {
-        tv_sec: 0,
-        tv_nsec: 0,
-    };
-    unsafe {
-        libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut ts);
-    }
-    ts.tv_sec as i64 * 1_000_000_000 + ts.tv_nsec as i64
+    queues_guard.get_mut(&player_id)?.queue.pop_front()
 }
 
 /// Gets the next available HardwareBuffer frame, if any (legacy single-player mode).
