@@ -861,7 +861,7 @@ impl VideoPlayer {
                 VideoState::Loading | VideoState::Buffering { .. }
             )
         {
-            if has_pending_frame || is_initializing {
+            if is_initializing || (has_pending_frame && !frame_wake_registered) {
                 ui.ctx().request_repaint();
             } else if frame_wake_registered {
                 ui.ctx()
