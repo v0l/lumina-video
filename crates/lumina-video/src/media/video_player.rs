@@ -850,7 +850,12 @@ impl VideoPlayer {
                 VideoState::Loading | VideoState::Buffering { .. }
             )
         {
-            ui.ctx().request_repaint();
+            if has_pending_frame || is_initializing {
+                ui.ctx().request_repaint();
+            } else {
+                ui.ctx()
+                    .request_repaint_after(std::time::Duration::from_millis(16));
+            }
         }
 
         VideoPlayerResponse {
