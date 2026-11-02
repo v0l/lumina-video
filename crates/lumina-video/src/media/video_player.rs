@@ -59,7 +59,7 @@ use super::triple_buffer::{triple_buffer, TripleBufferReader, TripleBufferWriter
 use super::video::AndroidGpuSurface;
 #[cfg(target_os = "linux")]
 use super::video::LinuxGpuSurface;
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 use super::video::MacOSGpuSurface;
 #[cfg(feature = "moq")]
 use super::video::VideoDecoderBackend;
@@ -89,7 +89,7 @@ pub struct PendingFrame {
     #[cfg(target_os = "android")]
     pub android_surface: Option<AndroidGpuSurface>,
     /// macOS GPU surface for zero-copy import (used when IOSurface is available)
-    #[cfg(target_os = "macos")]
+    #[cfg(any(target_os = "macos", target_os = "ios"))]
     pub macos_surface: Option<MacOSGpuSurface>,
     /// Windows GPU surface for zero-copy import (used when D3D11 shared handle is available)
     #[cfg(all(target_os = "windows", feature = "windows-native-video"))]
@@ -138,6 +138,7 @@ pub struct VideoPlayer {
     /// Rate-limit "no CPU fallback" warning (log once per player instance, persists across frames)
     #[cfg(any(
         target_os = "macos",
+        target_os = "ios",
         target_os = "linux",
         target_os = "android",
         all(target_os = "windows", feature = "windows-native-video")
@@ -184,6 +185,7 @@ impl VideoPlayer {
             controls_config: VideoControlsConfig::default(),
             #[cfg(any(
                 target_os = "macos",
+                target_os = "ios",
                 target_os = "linux",
                 target_os = "android",
                 all(target_os = "windows", feature = "windows-native-video")
@@ -280,6 +282,7 @@ impl VideoPlayer {
             controls_config: VideoControlsConfig::default(),
             #[cfg(any(
                 target_os = "macos",
+                target_os = "ios",
                 target_os = "linux",
                 target_os = "android",
                 all(target_os = "windows", feature = "windows-native-video")
@@ -896,7 +899,7 @@ impl VideoPlayer {
                 return;
             }
 
-            #[cfg(target_os = "macos")]
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
             if let Some(surface) = frame.frame.as_macos_surface() {
                 self.pending_frame_writer.write(PendingFrame {
                     frame: surface.cpu_fallback.clone(), // CPU fallback for when zero-copy fails
@@ -936,7 +939,7 @@ impl VideoPlayer {
                     pixel_format: Some(cpu_frame.format),
                     #[cfg(target_os = "android")]
                     android_surface: None,
-                    #[cfg(target_os = "macos")]
+                    #[cfg(any(target_os = "macos", target_os = "ios"))]
                     macos_surface: None,
                     #[cfg(all(target_os = "windows", feature = "windows-native-video"))]
                     windows_surface: None,
@@ -985,7 +988,7 @@ impl VideoPlayer {
             return;
         }
 
-        #[cfg(target_os = "macos")]
+        #[cfg(any(target_os = "macos", target_os = "ios"))]
         if let Some(surface) = frame.frame.as_macos_surface() {
             self.pending_frame_writer.write(PendingFrame {
                 frame: surface.cpu_fallback.clone(), // CPU fallback for when zero-copy fails
@@ -1028,7 +1031,7 @@ impl VideoPlayer {
             pixel_format: Some(cpu_frame.format),
             #[cfg(target_os = "android")]
             android_surface: None,
-            #[cfg(target_os = "macos")]
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
             macos_surface: None,
             #[cfg(all(target_os = "windows", feature = "windows-native-video"))]
             windows_surface: None,
@@ -1259,6 +1262,7 @@ impl VideoPlayer {
             rect,
             #[cfg(any(
                 target_os = "macos",
+                target_os = "ios",
                 target_os = "linux",
                 target_os = "android",
                 all(target_os = "windows", feature = "windows-native-video")
